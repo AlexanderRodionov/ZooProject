@@ -4,12 +4,37 @@ public class Main {
 
     public static void main(String[] argv) {
 
-        String filePath = argv[0];
-
         // Create zoo
         Zoo zoo = new Zoo();
         // Add animals to the zoo
-        zoo.addAnimals(filePath);
+        String filePath = null;
+        String fileFormat = null;
+
+        for (String s : argv) {
+            String[] args = s.split("=");
+            if (args[0].equals("-configtype")) {
+                fileFormat = args[1];
+            } else if (args[0].equals("-configfile")) {
+                filePath = args[1];
+            } else {
+                throw new IllegalArgumentException("Wrong config parameters");
+            }
+        }
+
+        switch (fileFormat) {
+            case "xml":
+                zoo.addAnimalsFromXml(filePath);
+                break;
+            case "json":
+                zoo.addAnimalsFromJson(filePath);
+                break;
+            case "db":
+                zoo.addAnimalsFromDataBase(filePath);
+                break;
+            default:
+                throw new IllegalArgumentException("Wrong file format");
+        }
+
 
         // Create user action trigger
         ActionTrigger trigger = new ActionTrigger(zoo);
@@ -24,7 +49,6 @@ public class Main {
 
         trigger.visit(herbivore);
         zoo.printAllStates();
-//        trigger.visit(carnivore);
         trigger.feedAnimals(herbivore);
         zoo.printAllStates();
 
@@ -45,6 +69,13 @@ public class Main {
         zoo.printAllStates();
 
         trigger.setMorning();
+        zoo.printAllStates();
+
+        trigger.waterAnimals(herbivore);
+        trigger.feedAnimals(herbivore);
+        zoo.printAllStates();
+        trigger.setRain();
+        trigger.setThunder();
         zoo.printAllStates();
     }
 }

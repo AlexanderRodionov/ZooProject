@@ -2,11 +2,12 @@ package zoo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class ActionTriggerTest {
+
 
     private static Zoo zoo;
     private static ActionTrigger trigger;
@@ -18,8 +19,8 @@ public class ActionTriggerTest {
     static void setup() {
 
         zoo = new Zoo();
-        String filePath = ZooTest.class.getClassLoader().getResource("zooAnimals.json").getPath();
-        zoo.addAnimals(filePath);
+        String filePath = ZooTest.class.getClassLoader().getResource("zooAnimals.hml").getPath();
+        zoo.addAnimalsFromXml(filePath);
         trigger = new ActionTrigger(zoo);
     }
 
@@ -31,6 +32,9 @@ public class ActionTriggerTest {
 
         trigger.visit(carnivore);
         assertEquals(zoo.getAllCarnivoreState(), AnimalState.MAKE_NOISE);
+    }
+
+    private void assertEquals(AnimalState allCarnivoreState, AnimalState makeNoise) {
     }
 
     @Test
@@ -52,8 +56,8 @@ public class ActionTriggerTest {
         zoo.setAllHerbivoreState(AnimalState.CALM);
         zoo.setAllCarnivoreState(AnimalState.MAKE_NOISE);
         trigger.setNight();
-        assertNotEquals(zoo.getAllHerbivoreState(), AnimalState.SLEEP);
-        assertNotEquals(zoo.getAllCarnivoreState(), AnimalState.SLEEP);
+        assertNotSame(zoo.getAllHerbivoreState(), AnimalState.SLEEP);
+        assertNotSame(zoo.getAllCarnivoreState(), AnimalState.SLEEP);
     }
 
     @Test
@@ -67,7 +71,7 @@ public class ActionTriggerTest {
         zoo.setAllHerbivoreState(AnimalState.MAKE_NOISE);
         zoo.setAllCarnivoreState(AnimalState.CALM);
         trigger.setMorning();
-        assertNotEquals(zoo.getAllHerbivoreState(), AnimalState.CALM);
+        assertNotSame(zoo.getAllHerbivoreState(), AnimalState.CALM);
         assertEquals(zoo.getAllCarnivoreState(), AnimalState.CALM);
     }
 

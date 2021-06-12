@@ -30,6 +30,12 @@ abstract class AnimalSpecies implements EventHandler {
         currentState = AnimalState.CALM;
     }
 
+    public AnimalSpecies(String name, int amount) {
+        this.name = name;
+        this.amount = amount;
+        currentState = AnimalState.CALM;
+    }
+
     /**
      * Defines a behavior on "keeper visit" event
      */
@@ -61,6 +67,16 @@ abstract class AnimalSpecies implements EventHandler {
     abstract public void updateSpeciesState();
 
     /**
+     * water
+     */
+    abstract public void watering();
+
+    /**
+     * rain
+     */
+    abstract public void rain();
+
+    /**
      * Prints values of species fields
      */
     public void printDescription() {
@@ -80,6 +96,9 @@ abstract class AnimalSpecies implements EventHandler {
             case FEEDING:
                 feeding();
                 break;
+            case WATERING:
+                watering();
+                break;
             case NIGHT:
                 night();
                 break;
@@ -88,6 +107,9 @@ abstract class AnimalSpecies implements EventHandler {
                 break;
             case THUNDER:
                 thunder();
+                break;
+            case RAIN:
+                rain();
                 break;
             case UPDATE_STATE:
                 updateSpeciesState();
@@ -99,7 +121,8 @@ abstract class AnimalSpecies implements EventHandler {
 
     @Override
     public String toString() {
-        return "Amount: " + amount + ". Name: " + name  + ". State: " + currentState;
+        return "Amount: " + amount + ". Name: "
+                + name  + ". State: " + currentState;
     }
 
     @Override

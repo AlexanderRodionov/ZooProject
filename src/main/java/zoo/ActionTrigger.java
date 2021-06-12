@@ -60,4 +60,22 @@ public class ActionTrigger {
         System.out.println("\n--- Set thunder ---");
         zoo.performAction(Events.THUNDER);
     }
+
+    /**
+     * water the animals
+     */
+    void waterAnimals(AnimalType animalType) {
+        System.out.println("\n--- Watering " + animalType.name() + " ---");
+        zoo.performAction(Events.WATERING, animalType);
+    }
+
+    /**
+     * rain
+     */
+
+    void setRain() {
+        System.out.println("\n--- Set rain ---");
+        zoo.performAction(Events.RAIN);
+    }
+
 }

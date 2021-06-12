@@ -3,6 +3,13 @@ package zoo;
  * Class for describing a species of herbivore animal
  */
 public class Herbivore extends AnimalSpecies {
+    public Herbivore(){
+
+    }
+
+    public Herbivore(String name, int amount) {
+        super(name, amount);
+    }
 
     /**
      * Method for updating current species state, according to zoo information about herbivore type
@@ -35,6 +42,16 @@ public class Herbivore extends AnimalSpecies {
      */
     @Override
     public void feeding() {
+        currentState = AnimalState.CALM;
+        Zoo.setAllHerbivoreState(AnimalState.CALM);
+        printDescription();
+    }
+    /**
+     * water
+     */
+
+    @Override
+    public void watering() {
         currentState = AnimalState.CALM;
         Zoo.setAllHerbivoreState(AnimalState.CALM);
         printDescription();
@@ -93,6 +110,16 @@ public class Herbivore extends AnimalSpecies {
         setCurrentState(AnimalState.MAKE_NOISE);
         Zoo.setAllHerbivoreState(AnimalState.MAKE_NOISE);
         Zoo.setAllCarnivoreState(AnimalState.MAKE_NOISE);
+        printDescription();
+    }
+
+    /**
+     * rain
+     */
+    @Override
+    public void rain() {
+        setCurrentState(AnimalState.CALM);
+        Zoo.setAllHerbivoreState(AnimalState.CALM);
         printDescription();
     }
 }

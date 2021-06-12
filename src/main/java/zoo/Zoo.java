@@ -1,11 +1,20 @@
 package zoo;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,7 +57,7 @@ public class Zoo {
      *
      * @param jsonPath path to JSON file with animals info
      */
-    public void addAnimals(String jsonPath) {
+    public void addAnimalsFromJson(String jsonPath) {
         ObjectMapper mapper = new ObjectMapper();
         File animalsFile = new File(jsonPath);
         try {
@@ -61,7 +70,61 @@ public class Zoo {
         }
     }
 
+
     /**
+     * Method for adding animals to the zoo from the specified XML file
+     *
+     * @param xmlPath path to XML file with animals info
+     */
+    public void addAnimalsFromXml(String xmlPath) {
+        XmlMapper mapper = new XmlMapper();
+        File animalsFile = new File(xmlPath);
+        try {
+            AnimalsDataFile animalsData = mapper.readValue(animalsFile, AnimalsDataFile.class);
+            zooAnimalSpecies.addAll(animalsData.getCarnivoreAnimals());
+            zooAnimalSpecies.addAll(animalsData.getHerbivoreAnimals());
+        } catch (IOException e) {
+            System.out.println(e.toString());
+            throw new IllegalStateException("File hasn't been parsed");
+        }
+    }
+
+    public void addAnimalsFromDataBase(String connectionPath) {
+        ArrayList<String> connectionData = new ArrayList<>(3);
+        try {
+            Files.lines(Paths.get(connectionPath)).forEach(connectionData::add);
+            try (Connection connection = DriverManager.getConnection(connectionData.get(0),
+                    connectionData.get(1),
+                    connectionData.get(2))) {
+                LinkedList<Carnivore> carnivores = new LinkedList<>();
+                LinkedList<Herbivore> herbivores = new LinkedList<>();
+                try (Statement statement = connection.createStatement()) {
+                    statement.execute("SELECT * FROM zoo WHERE type = 'carnivore'");
+                    try (ResultSet result = statement.getResultSet()) {
+                        while (result.next())
+                            carnivores.add(new Carnivore(result.getString(3), result.getInt(4)));
+                    }
+                    statement.execute("SELECT * FROM zoo WHERE type = 'herbivore'");
+                    try (ResultSet result = statement.getResultSet()) {
+                        while (result.next())
+                            herbivores.add(new Herbivore(result.getString(3), result.getInt(4)));
+                    }
+
+                    if (!carnivores.isEmpty())
+                        zooAnimalSpecies.addAll(carnivores);
+                    if (!herbivores.isEmpty())
+                        zooAnimalSpecies.addAll(herbivores);
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+        /**
      * Method for handling user actions with the specified type of animals
      *
      * @param event event to do a certain actions with animals
@@ -128,4 +191,5 @@ public class Zoo {
             animal.printDescription();
         }
     }
+
 }

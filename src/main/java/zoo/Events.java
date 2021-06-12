@@ -33,5 +33,15 @@ public enum Events {
      *  describes an event, when animals should update their states,
      *  according to zoo info fields
      */
-    UPDATE_STATE
+    UPDATE_STATE,
+
+    /**
+     * water the animals
+     */
+    WATERING,
+
+    /**
+     * rain
+     */
+    RAIN
 }
