@@ -18,6 +18,7 @@ class ZooTest {
     private AnimalType herbivore = AnimalType.HERBIVORE;
 
     @BeforeAll
+
     static void setup() {
         zoo = new Zoo();
         String filePath = ZooTest.class.getClassLoader().getResource("zooAnimals.json").getPath();
